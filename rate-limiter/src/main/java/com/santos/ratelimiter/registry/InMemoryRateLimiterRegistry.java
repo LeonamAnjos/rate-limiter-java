@@ -25,4 +25,13 @@ public class InMemoryRateLimiterRegistry implements RateLimiterRegistry {
 		return map.computeIfAbsent(id, (k) -> new ConcurrentRateLimiter(new TokenBucketRateLimiter(this.limitForPeriod, this.periodInSeconds)));
 	}
 
+	@Override
+	public long getLimitForPeriod() {
+		return this.limitForPeriod;
+	}
+
+	@Override
+	public long getPeriodInSeconds() {
+		return this.periodInSeconds;
+	}
 }
