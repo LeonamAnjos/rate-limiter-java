@@ -1,6 +1,8 @@
 package com.santos.ratelimiter.algorithm;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
@@ -19,30 +21,50 @@ class TokenBucketRateLimiterTest {
 	void setup() {
 		limiter = new TokenBucketRateLimiter(limitForPeriod, periodInSeconds);
 	}
-		
+
 	@Test
 	void allowRequest_whenLimitForPeriodIsRespected() {
 		for(int i = 0; i < limitForPeriod; i++) {
 			assertTrue(limiter.allowRequest());
 		}
 	}
-	
+
 	@Test
 	void allowRequest_whenLimitForPeriodIsNotRespected() {
 		for(int i = 0; i < limitForPeriod; i++)
 			limiter.allowRequest();
-		
+
 		assertFalse(limiter.allowRequest());
 	}
-	
+
 	@Test
 	void allowRequest_whenBucketIsRefilled() throws InterruptedException {
 		for(int i = 0; i < limitForPeriod + 1; i++)
 			limiter.allowRequest();
-		
+
 		TimeUnit.SECONDS.sleep(1);
-		
+
 		assertTrue(limiter.allowRequest());
 	}
 
+	@Test
+	void getLimitFroPeriod_whenTest() {
+		assertEquals(limitForPeriod, limiter.getLimitForPeriod());
+	}
+
+	@Test
+	void getPeriodInSeconds_whenTest() {
+		assertEquals(periodInSeconds, limiter.getPeriodInSeconds());
+	}
+
+	@Test
+	void equals_whenSameInstance() {
+		assertTrue(limiter.equals(limiter));
+	}
+
+	@Test
+	void equals_whenDifferentInstances() {
+		RateLimiter otherLimiter = new TokenBucketRateLimiter(limitForPeriod, periodInSeconds);
+		assertFalse(limiter.equals(otherLimiter));
+	}
 }

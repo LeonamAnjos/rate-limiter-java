@@ -16,4 +16,14 @@ public class ConcurrentRateLimiter implements RateLimiter {
 		return limiter.allowRequest();
 	}
 
+	@Override
+	public long getLimitForPeriod() {
+		return limiter.getLimitForPeriod();
+	}
+
+	@Override
+	public long getPeriodInSeconds() {
+		return limiter.getPeriodInSeconds();
+	}
+
 }

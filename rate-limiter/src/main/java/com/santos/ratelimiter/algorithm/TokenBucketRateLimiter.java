@@ -30,6 +30,36 @@ public class TokenBucketRateLimiter implements RateLimiter {
 		return true;
 	}
 
+	@Override
+	public long getLimitForPeriod() {
+		return this.limitForPeriod;
+	}
+
+	@Override
+	public long getPeriodInSeconds() {
+		return this.periodInSeconds;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TokenBucketRateLimiter other = (TokenBucketRateLimiter) obj;
+		if (bucketSize != other.bucketSize)
+			return false;
+		if (lastRefillTimestamp != other.lastRefillTimestamp)
+			return false;
+		if (limitForPeriod != other.limitForPeriod)
+			return false;
+		if (periodInSeconds != other.periodInSeconds)
+			return false;
+		return true;
+	}
+
 	private void refill() {
 		long now = System.nanoTime();
 		long elapsedTime = now - this.lastRefillTimestamp;
@@ -44,4 +74,5 @@ public class TokenBucketRateLimiter implements RateLimiter {
 		this.bucketSize = Math.min(this.bucketSize + tokens, this.limitForPeriod);
 		this.lastRefillTimestamp = System.nanoTime();
 	}
+
 }
