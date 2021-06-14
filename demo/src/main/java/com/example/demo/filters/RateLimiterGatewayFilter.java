@@ -22,7 +22,7 @@ public class RateLimiterGatewayFilter implements GatewayFilter {
 
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-		logger.info("Rate limiter GATEWAY filter: {} request per {} seconds {}.",
+		logger.info("Rate-limiter gateway filter: {} request per {} seconds is {}.",
 				configuration.getLimitForPeriod(),
 				configuration.getPeriodInSeconds(),
 				configuration.isEnabled() ? "ENABLED" : "DISABLED");

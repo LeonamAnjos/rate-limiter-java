@@ -22,7 +22,7 @@ public class RateLimiterGlobalFilter implements GlobalFilter {
 
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-		logger.info("Rate limiter GLOBAL filter: {} request per {} seconds {}.",
+		logger.info("Rate-limiter global filter: {} request per {} seconds is {}.",
 				configuration.getLimitForPeriod(),
 				configuration.getPeriodInSeconds(),
 				configuration.isEnabled() ? "ENABLED" : "DISABLED");
