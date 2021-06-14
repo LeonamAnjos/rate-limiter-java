@@ -42,12 +42,10 @@ public class TokenBucketRateLimiter implements RateLimiter {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+
 		TokenBucketRateLimiter other = (TokenBucketRateLimiter) obj;
 		if (bucketSize != other.bucketSize)
 			return false;
@@ -57,6 +55,7 @@ public class TokenBucketRateLimiter implements RateLimiter {
 			return false;
 		if (periodInSeconds != other.periodInSeconds)
 			return false;
+
 		return true;
 	}
 
