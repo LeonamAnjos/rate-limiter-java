@@ -27,6 +27,9 @@ public class RateLimiterGlobalFilter implements GlobalFilter {
 				configuration.getPeriodInSeconds(),
 				configuration.isEnabled() ? "ENABLED" : "DISABLED");
 
+		if (!configuration.isEnabled())
+			return chain.filter(exchange);
+
 		return chain.filter(exchange);
 	}
 

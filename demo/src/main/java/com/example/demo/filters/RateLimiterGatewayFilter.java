@@ -27,7 +27,9 @@ public class RateLimiterGatewayFilter implements GatewayFilter {
 				configuration.getPeriodInSeconds(),
 				configuration.isEnabled() ? "ENABLED" : "DISABLED");
 
-		return chain.filter(exchange);
-	}
+		if (!configuration.isEnabled())
+			return chain.filter(exchange);
+
+		return chain.filter(exchange);	}
 
 }
