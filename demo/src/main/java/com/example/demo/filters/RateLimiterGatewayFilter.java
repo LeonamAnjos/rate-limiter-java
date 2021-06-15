@@ -36,8 +36,9 @@ public class RateLimiterGatewayFilter extends RateLimiterFilter implements Gatew
 			return chain.filter(exchange);
 
 		String requester = requesterIdentifier.identify(exchange.getRequest());
-		RateLimiter rateLimiter = getRateLimiter(requester);
-		logger.info("{} is allowed? {}", requester, rateLimiter.allowRequest());
+		RateLimiter rateLimiter = getRateLimiterRegistry().rateLimiter(requester);
+		if (!rateLimiter.allowRequest())
+			return errorResponse(exchange.getResponse());
 
 		return chain.filter(exchange);
 	}

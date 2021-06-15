@@ -37,7 +37,8 @@ public class RateLimiterGlobalFilter extends RateLimiterFilter implements Global
 
 		String requester = requesterIdentifier.identify(exchange.getRequest());
 		RateLimiter rateLimiter = getRateLimiterRegistry().rateLimiter(requester);
-		logger.info("{} is allowed? {}", requester, rateLimiter.allowRequest());
+		if (!rateLimiter.allowRequest())
+			return errorResponse(exchange.getResponse());
 
 		return chain.filter(exchange);
 	}

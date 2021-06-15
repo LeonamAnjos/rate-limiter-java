@@ -48,6 +48,30 @@ class TokenBucketRateLimiterTest {
 	}
 
 	@Test
+	void allowRequest_whenPeriodInSecondsIsInvalid() throws InterruptedException {
+		RateLimiter limiter = new TokenBucketRateLimiter(1, 0);
+
+		assertTrue(limiter.allowRequest());
+		assertFalse(limiter.allowRequest());
+
+		TimeUnit.SECONDS.sleep(1);
+
+		assertFalse(limiter.allowRequest());
+	}
+
+	@Test
+	void allowRequest_whenlimitForPeriodIsInvalid() throws InterruptedException {
+		RateLimiter limiter = new TokenBucketRateLimiter(0, 1);
+
+		assertFalse(limiter.allowRequest());
+		assertFalse(limiter.allowRequest());
+
+		TimeUnit.SECONDS.sleep(1);
+
+		assertFalse(limiter.allowRequest());
+	}
+
+	@Test
 	void getLimitFroPeriod_whenTest() {
 		assertEquals(limitForPeriod, limiter.getLimitForPeriod());
 	}
