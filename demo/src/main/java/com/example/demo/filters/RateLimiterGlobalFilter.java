@@ -5,19 +5,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.example.demo.configurations.RateLimiterGlobalFilterConfiguration;
 import com.example.demo.utilities.ResquesterIdentifier;
 import com.santos.ratelimiter.RateLimiter;
-import com.santos.ratelimiter.RateLimiterRegistry;
 
 import reactor.core.publisher.Mono;
 
 @Component
-public class RateLimiterGlobalFilter implements GlobalFilter {
+public class RateLimiterGlobalFilter extends RateLimiterFilter implements GlobalFilter {
 
 	private static Logger logger = LoggerFactory.getLogger(RateLimiterGlobalFilter.class);
 
@@ -26,9 +24,6 @@ public class RateLimiterGlobalFilter implements GlobalFilter {
 
 	@Autowired
 	private ResquesterIdentifier requesterIdentifier;
-
-	@Autowired
-	private RateLimiterRegistry rateLimiterRegistry;
 
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -41,17 +36,19 @@ public class RateLimiterGlobalFilter implements GlobalFilter {
 			return chain.filter(exchange);
 
 		String requester = requesterIdentifier.identify(exchange.getRequest());
-		logger.info(requester);
-
-		RateLimiter rateLimiter = rateLimiterRegistry.reateLimiter(requester);
-		logger.info("IsAllowed? {}", rateLimiter.allowRequest());
+		RateLimiter rateLimiter = getRateLimiterRegistry().rateLimiter(requester);
+		logger.info("{} is allowed? {}", requester, rateLimiter.allowRequest());
 
 		return chain.filter(exchange);
 	}
 
-	@Bean
-	private RateLimiterRegistry rateLimiterRegistry() {
-		logger.info("Rate Limiter Registry of: {} requests per {} seconds", configuration.getLimitForPeriod(), configuration.getPeriodInSeconds());
-		return RateLimiterRegistry.of(configuration.getLimitForPeriod(), configuration.getPeriodInSeconds());
+	@Override
+	protected long getPeriodInSeconds() {
+		return configuration.getPeriodInSeconds();
+	}
+
+	@Override
+	protected long getLimitForPeriod() {
+		return configuration.getLimitForPeriod();
 	}
 }
