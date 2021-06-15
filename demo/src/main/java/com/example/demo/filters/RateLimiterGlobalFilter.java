@@ -5,11 +5,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.example.demo.configurations.RateLimiterGlobalFilterConfiguration;
 import com.example.demo.utilities.ResquesterIdentifier;
+import com.santos.ratelimiter.RateLimiter;
+import com.santos.ratelimiter.RateLimiterRegistry;
 
 import reactor.core.publisher.Mono;
 
@@ -24,6 +27,9 @@ public class RateLimiterGlobalFilter implements GlobalFilter {
 	@Autowired
 	private ResquesterIdentifier requesterIdentifier;
 
+	@Autowired
+	private RateLimiterRegistry rateLimiterRegistry;
+
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 		logger.info("Rate-limiter global filter: {} request per {} seconds is {}.",
@@ -37,7 +43,15 @@ public class RateLimiterGlobalFilter implements GlobalFilter {
 		String requester = requesterIdentifier.identify(exchange.getRequest());
 		logger.info(requester);
 
+		RateLimiter rateLimiter = rateLimiterRegistry.reateLimiter(requester);
+		logger.info("IsAllowed? {}", rateLimiter.allowRequest());
+
 		return chain.filter(exchange);
 	}
 
+	@Bean
+	private RateLimiterRegistry rateLimiterRegistry() {
+		logger.info("Rate Limiter Registry of: {} requests per {} seconds", configuration.getLimitForPeriod(), configuration.getPeriodInSeconds());
+		return RateLimiterRegistry.of(configuration.getLimitForPeriod(), configuration.getPeriodInSeconds());
+	}
 }

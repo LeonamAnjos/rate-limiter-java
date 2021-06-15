@@ -1,6 +1,10 @@
 package com.example.demo.configurations;
 
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
 public abstract class RateLimiterConfiguration {
+
 	private long limitForPeriod;
 	private long periodInSeconds;
 	private boolean enabled;
