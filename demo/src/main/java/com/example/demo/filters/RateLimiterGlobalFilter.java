@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.example.demo.configurations.RateLimiterGlobalFilterConfiguration;
+import com.example.demo.utilities.ResquesterIdentifier;
 
 import reactor.core.publisher.Mono;
 
@@ -20,6 +21,9 @@ public class RateLimiterGlobalFilter implements GlobalFilter {
 	@Autowired
 	private RateLimiterGlobalFilterConfiguration configuration;
 
+	@Autowired
+	private ResquesterIdentifier requesterIdentifier;
+
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 		logger.info("Rate-limiter global filter: {} request per {} seconds is {}.",
@@ -29,6 +33,9 @@ public class RateLimiterGlobalFilter implements GlobalFilter {
 
 		if (!configuration.isEnabled())
 			return chain.filter(exchange);
+
+		String requester = requesterIdentifier.identify(exchange.getRequest());
+		logger.info(requester);
 
 		return chain.filter(exchange);
 	}
