@@ -8,7 +8,7 @@ public interface RateLimiterRegistry {
 		return new InMemoryRateLimiterRegistry(limitForPeriod, periodInSeconds);
 	}
 
-	RateLimiter reateLimiter(String id);
+	RateLimiter rateLimiter(String id);
 
 	long getLimitForPeriod();
 

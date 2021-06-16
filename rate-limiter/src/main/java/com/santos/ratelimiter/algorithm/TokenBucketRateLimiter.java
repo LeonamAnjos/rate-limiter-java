@@ -1,5 +1,10 @@
 package com.santos.ratelimiter.algorithm;
 
+import static java.math.BigDecimal.ZERO;
+import static java.math.BigDecimal.valueOf;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.concurrent.TimeUnit;
 
 import com.santos.ratelimiter.RateLimiter;
@@ -8,24 +13,25 @@ public class TokenBucketRateLimiter implements RateLimiter {
 
 	private final long limitForPeriod;
 	private final long periodInSeconds;
-	
+
+	private BigDecimal refillFactor;
 	private long bucketSize;
 	private long lastRefillTimestamp;
-	
+
 	public TokenBucketRateLimiter(long limitForPeriod, long periodInSeconds) {
 		super();
 		this.limitForPeriod = limitForPeriod;
 		this.periodInSeconds = periodInSeconds;
-		
+		this.refillFactor = calcRefillFactor(limitForPeriod, periodInSeconds);
 		this.addToBucket(limitForPeriod);
 	}
 
 	@Override
 	public boolean allowRequest() {
-		this.refill();
+		this.addToBucket(this.calcRefill());
 		if (this.bucketSize <= 0)
 			return false;
-		
+
 		this.bucketSize--;
 		return true;
 	}
@@ -59,19 +65,28 @@ public class TokenBucketRateLimiter implements RateLimiter {
 		return true;
 	}
 
-	private void refill() {
-		long now = System.nanoTime();
+	private long calcRefill() {
+		long now = System.currentTimeMillis();
 		long elapsedTime = now - this.lastRefillTimestamp;
-		long tokens = elapsedTime * (this.limitForPeriod / this.periodInSeconds) / TimeUnit.SECONDS.toNanos(1);
-		this.addToBucket(tokens);
+
+		return valueOf(elapsedTime).multiply(refillFactor).longValue();
 	}
 
 	private void addToBucket(long tokens) {
 		if (tokens <= 0)
 			return;
-		
+
 		this.bucketSize = Math.min(this.bucketSize + tokens, this.limitForPeriod);
-		this.lastRefillTimestamp = System.nanoTime();
+		this.lastRefillTimestamp = System.currentTimeMillis();
+	}
+
+	private BigDecimal calcRefillFactor(long limitForPeriod, long periodInSeconds) {
+		if (periodInSeconds <= 0)
+			return ZERO;
+
+		return valueOf(limitForPeriod)
+				.divide(valueOf(periodInSeconds), 20, RoundingMode.HALF_UP)
+				.divide(valueOf(TimeUnit.SECONDS.toMillis(1)), 20, RoundingMode.HALF_UP);
 	}
 
 }

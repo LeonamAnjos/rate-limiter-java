@@ -23,7 +23,7 @@ class InMemoryRateLimiterRegistryTest {
 
 	@Test
 	void rateLimiter_whenFirstTimeWithId() {
-		RateLimiter limiter = registry.reateLimiter("test-id-1");
+		RateLimiter limiter = registry.rateLimiter("test-id-1");
 
 		assertNotNull(limiter);
 		assertEquals(limitForPeriod, limiter.getLimitForPeriod());
@@ -32,8 +32,8 @@ class InMemoryRateLimiterRegistryTest {
 
 	@Test
 	void rateLimiter_whenSecondTimeWithId() {
-		RateLimiter limiter1 = registry.reateLimiter("test-id-1");
-		RateLimiter limiter2 = registry.reateLimiter("test-id-1");
+		RateLimiter limiter1 = registry.rateLimiter("test-id-1");
+		RateLimiter limiter2 = registry.rateLimiter("test-id-1");
 
 		assertEquals(limiter1, limiter2);
 	}
