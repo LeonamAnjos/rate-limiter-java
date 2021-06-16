@@ -3,6 +3,7 @@ package com.example.demo.filters;
 import static java.math.BigDecimal.valueOf;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 
 import org.slf4j.Logger;
@@ -47,7 +48,7 @@ public abstract class RateLimiterFilter {
 	}
 
 	private BigDecimal getWaitTime() {
-		BigDecimal factor  = valueOf(getLimitForPeriod()).divide(valueOf(getPeriodInSeconds()));
-		return valueOf(1).divide(factor);
+		BigDecimal factor  = valueOf(getLimitForPeriod()).divide(valueOf(getPeriodInSeconds()), 10, RoundingMode.HALF_UP);
+		return valueOf(1).divide(factor, 10, RoundingMode.HALF_UP).add(valueOf(1));
 	}
 }

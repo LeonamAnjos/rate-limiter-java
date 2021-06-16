@@ -4,6 +4,7 @@ import static java.math.BigDecimal.ZERO;
 import static java.math.BigDecimal.valueOf;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.concurrent.TimeUnit;
 
 import com.santos.ratelimiter.RateLimiter;
@@ -65,7 +66,7 @@ public class TokenBucketRateLimiter implements RateLimiter {
 	}
 
 	private long calcRefill() {
-		long now = System.nanoTime();
+		long now = System.currentTimeMillis();
 		long elapsedTime = now - this.lastRefillTimestamp;
 
 		return valueOf(elapsedTime).multiply(refillFactor).longValue();
@@ -76,7 +77,7 @@ public class TokenBucketRateLimiter implements RateLimiter {
 			return;
 
 		this.bucketSize = Math.min(this.bucketSize + tokens, this.limitForPeriod);
-		this.lastRefillTimestamp = System.nanoTime();
+		this.lastRefillTimestamp = System.currentTimeMillis();
 	}
 
 	private BigDecimal calcRefillFactor(long limitForPeriod, long periodInSeconds) {
@@ -84,8 +85,8 @@ public class TokenBucketRateLimiter implements RateLimiter {
 			return ZERO;
 
 		return valueOf(limitForPeriod)
-				.divide(valueOf(periodInSeconds))
-				.divide(valueOf(TimeUnit.SECONDS.toNanos(1)));
+				.divide(valueOf(periodInSeconds), 20, RoundingMode.HALF_UP)
+				.divide(valueOf(TimeUnit.SECONDS.toMillis(1)), 20, RoundingMode.HALF_UP);
 	}
 
 }

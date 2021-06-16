@@ -30,7 +30,7 @@ public class RateLimiterGatewayFilter extends RateLimiterFilter implements Gatew
 		logger.info("Rate-limiter gateway filter: {} request per {} seconds is {}.",
 				configuration.getLimitForPeriod(),
 				configuration.getPeriodInSeconds(),
-				configuration.isEnabled() ? "ENABLED" : "DISABLED");
+				configuration.isEnabled() ? "ON" : "OFF");
 
 		if (!configuration.isEnabled())
 			return chain.filter(exchange);

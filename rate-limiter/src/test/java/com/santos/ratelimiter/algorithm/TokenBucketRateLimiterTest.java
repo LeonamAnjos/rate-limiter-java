@@ -88,7 +88,7 @@ class TokenBucketRateLimiterTest {
 
 	@Test
 	void equals_whenDifferentInstances() {
-		RateLimiter otherLimiter = new TokenBucketRateLimiter(limitForPeriod, periodInSeconds);
-		assertFalse(limiter.equals(otherLimiter));
+		assertFalse(limiter.equals(new TokenBucketRateLimiter(4, periodInSeconds)));
+		assertFalse(limiter.equals(new TokenBucketRateLimiter(limitForPeriod, 2)));
 	}
 }
