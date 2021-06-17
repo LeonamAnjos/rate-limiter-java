@@ -1,12 +1,10 @@
 # Rate-Limiter
 
-## Description
+Implementation to limit the number of requests a requester can execute in a defined period of time. In this repository there are two `java` projects as follows:
+- **rate-limiter**: implementation of the rate limiter;
+- **demo**: Spring Boot API Gateway to demonstrate how to use the rate limiter using Gateway Filter.
 
-The repository contains two java projects as follows:
-- **rate-limiter**: rate limiter implementation;
-- **demo**: Spring Boot API Gateway to demonstrate how to use the rate limiter using Gateway or Global filters.
-
-The `rate-limiter` implements [Token Bucket](https://pt.wikipedia.org/wiki/Token_bucket) to manage the allowed request per period of time. It relies on a configuration composed with:
+The `rate-limiter` implements [Token Bucket](https://pt.wikipedia.org/wiki/Token_bucket) to manage the allowed request per period of time. The configuration is composed of two values:
 - Limit for the period (`limitForPeriod`): the number of requests allowed in a period of time.
 - Period in seconds (`periodInSeconds`): the period in seconds that the amount informed applies.
 
@@ -43,7 +41,7 @@ GET /get
 It is possible to configure the `rate-limiter` by changing `application.properties` configuration. The file is located at `demo/src/main/resources` folder. Find below what is possible to configure:
 `rate-limiter.gateway-filter.limit-for-period`: number of requests allowed by requester during a period of time.
 `rate-limiter.gateway-filter.period-in-seconds`: a period of time in seconds that the limit of requests applies.
-`rate-limiter.gateway-filter.enabled`: Enable or disable the filter (TRUE / FALSE).
+`rate-limiter.gateway-filter.enabled`: enable or disable the filter (TRUE / FALSE).
 
 Execute the command below to run the demo module:
    ```sh
