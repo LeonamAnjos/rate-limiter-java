@@ -48,6 +48,18 @@ class TokenBucketRateLimiterTest {
 	}
 
 	@Test
+	void allowRequest_whenConfguredTo100RequestsPerHour() throws InterruptedException {
+		int limitForPeriod = 100;
+		int periodInSeconds = 3600;
+		RateLimiter limiter = new TokenBucketRateLimiter(limitForPeriod, periodInSeconds);
+
+		for(int i = 0; i < limitForPeriod; i++)
+			assertTrue(limiter.allowRequest());
+
+		assertFalse(limiter.allowRequest());
+	}
+
+	@Test
 	void allowRequest_whenPeriodInSecondsIsInvalid() throws InterruptedException {
 		RateLimiter limiter = new TokenBucketRateLimiter(1, 0);
 

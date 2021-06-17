@@ -19,7 +19,6 @@ public class ApiGatewayConfiguration {
 		return builder
 				.routes()
 				.route(p -> p.path("/get").filters(f -> f.filter(rateLimiterGatewayFilter)).uri("http://httpbin.org"))
-				.route(p -> p.path("/anything").uri("http://httpbin.org"))
 				.build();
 	}
 }
