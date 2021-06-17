@@ -55,11 +55,11 @@ public class TokenBucketRateLimiter implements RateLimiter {
 		TokenBucketRateLimiter other = (TokenBucketRateLimiter) obj;
 		if (bucketSize != other.bucketSize)
 			return false;
-		if (lastRefillTimestamp != other.lastRefillTimestamp)
-			return false;
 		if (limitForPeriod != other.limitForPeriod)
 			return false;
 		if (periodInSeconds != other.periodInSeconds)
+			return false;
+		if (lastRefillTimestamp != other.lastRefillTimestamp)
 			return false;
 
 		return true;
